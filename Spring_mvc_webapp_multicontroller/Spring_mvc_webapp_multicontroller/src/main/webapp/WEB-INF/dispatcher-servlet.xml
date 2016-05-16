@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-3.2.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+      
+<!-- At the heard of spring mvc is dispatcher servlet, a servlet that functions as spring mvc
+front controller. Like any servlet, dispatcher servlet must be configure in the web application
+web.xml file. -->      
+        
+<!-- We will configure the dispatcher-servlet.xml. The dispatcher servlet needs to be configured
+so that the web container can bootstrap and map the servlet. Configuring the dispatcher servlet
+is a two way process. First you need a total container to load a servlet and map to one or more 
+URL patterns. After bootstraping, the servlet uses the created web application context to configure
+it self. The ... will try to detect the needed components from this application context and if 
+it is not found it will use some kind of default. -->
+
+	<context:component-scan base-package="com.demo.controller" />
+	
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix">
+			<value>/WEB-INF/pages/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+	
+	<!-- Internal Path Method Name Resolver. -->
+	<!-- In spring MVC, the ControllerClassNameHandlerMapping uses conventions to map request URLs
+	to controllers, conventions of the configuration. It takes the class name, removes the controller
+	suffix if it exists and returns the remaining text, lower case and with a leading forward slash.
+	Por lo tanto, lo que va a hacer la siguiente linea, es buscar los controladores, en este caso
+	UserController, le va a sacar la palabra Controller, de manera que va a quedar User, lo va a
+	pasar a minuscuclas y le va a agregar una barra adelante de forma tal que va a quedar asi: /user -->
+	<bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping"/>
+	
+	<!-- Now, we register the UserController. -->
+	<bean class="com.demo.controller.UserController">
+		<!-- The methodNameResolver interface priori.. the multiActionController class using
+		the strategy of the gang of four (GoF) design pattern, allowing the mapping from incoming
+		request to the handler method name to be buried without affecting another application code.
+		 -->
+		<property name="methodNameResolver">
+			<bean class="org.springframework.web.servlet.mvc.multiaction.InternalPathMethodNameResolver">
+				<property name="prefix" value=""/>
+				<property name="suffix" value="User"/>
+			</bean>
+		</property>		
+	</bean>
+	
+	
+	
+</beans>

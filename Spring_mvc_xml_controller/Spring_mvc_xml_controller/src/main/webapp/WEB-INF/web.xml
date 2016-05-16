@@ -1,0 +1,52 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+	<display-name>Counter Web Application</display-name>
+
+	<!-- in the context param, the context config location param is provided, which defines
+	the location of spring root webapp application context configuration file. -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/dispatcher-servlet.xml</param-value>
+	</context-param>
+
+	<!-- the context loader listener helps to tie the live cycle of the application context
+	to the live cycle of the servlet context. and number two, it automates the creation of 
+	the application context so you don't have to write explicit code to create it. 
+	is a convenient function. another convenient thing about the servlet context listener
+	is that creates a web application context, and web application context provides access
+	to servlet context to be a servlet context where beans and it gets the servlet context 
+	method.
+	so going over this context loader listener, remember that is a servlet listener that
+	loads additional configuration in spring application context a long side of the
+	application context created by the dispatcher servlet. to user the context load 
+	listener we had the following listener declaration the web.xml file.
+	this listener is for spring to bootstrap and shout down the root web application context.-->
+	<listener>
+		<listener-class>
+			org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+	</listener>
+
+	<!-- servlet declaration. -->
+	<servlet>
+		<!-- declaration of the servlet name. -->
+		<servlet-name>dispatcher</servlet-name>
+		<!-- set of the class. -->
+		<servlet-class>
+			org.springframework.web.servlet.DispatcherServlet
+		</servlet-class>
+		<!-- this servlet has the priority 1. -->
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<!-- the servlet map to the URL. -->
+	<servlet-mapping>
+		<!-- the servlet name of the declaration. el mismo nombre que se le puso al servlet. -->
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	
+</web-app>

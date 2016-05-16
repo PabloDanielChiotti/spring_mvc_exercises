@@ -1,0 +1,67 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	      http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+	
+	<display-name>Counter Web Application</display-name>
+
+	<!-- este context-param junto con el listener que se encuentra mas abajo, son necesarios
+	para poder utilizar jpa. -->
+	<!-- in the context param, the context config location param is provided, which defines
+	the location of spring root webapp application context configuration file. -->
+ 	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:/jpaContext.xml</param-value>
+	</context-param>
+
+	<filter>
+		<filter-name>SpringOpenEntityManagerInViewFilter</filter-name>
+		<filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>SpringOpenEntityManagerInViewFilter</filter-name>
+		<!-- para todas las requests. -->
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!-- servlet declaration. -->
+	<servlet>
+		<!-- declaration of the servlet name. -->
+		<servlet-name>dispatcher</servlet-name>
+		<!-- set of the class. -->
+		<servlet-class>
+			org.springframework.web.servlet.DispatcherServlet
+		</servlet-class>
+		<init-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/dispatcher-servlet.xml</param-value>
+		</init-param>
+		<!-- this servlet has the priority 1. -->
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<!-- the servlet map to the URL. -->
+	<servlet-mapping>
+		<!-- the servlet name of the declaration. el mismo nombre que se le puso al servlet. -->
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>	
+
+	<!-- the context loader listener helps to tie the live cycle of the application context
+	to the live cycle of the servlet context. and number two, it automates the creation of 
+	the application context so you don't have to write explicit code to create it. 
+	is a convenient function. another convenient thing about the servlet context listener
+	is that creates a web application context, and web application context provides access
+	to servlet context to be a servlet context where beans and it gets the servlet context 
+	method.
+	so going over this context loader listener, remember that is a servlet listener that
+	loads additional configuration in spring application context a long side of the
+	application context created by the dispatcher servlet. to user the context load 
+	listener we had the following listener declaration the web.xml file.
+	this listener is for spring to bootstrap and shout down the root web application context.-->
+	<listener>
+		<listener-class>
+			org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+	</listener>
+
+</web-app>

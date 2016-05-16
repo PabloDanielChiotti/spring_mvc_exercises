@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-3.2.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
+        
+        <!-- basicamente sirve para decirle a spring mvc que vamos a setear todo a traves de anotaciones -->
+        <context:annotation-config />
+        <!-- le dice que busque los componentes bajo ese path, seria lo mismo que agregar aqui
+        com.demo.repository y otro con com.demo.service
+        el com.demo.controller ya se encuentra en el dispatcher -->
+        <context:component-scan base-package="com.demo" />
+        
+        <!-- lo que hace, es decirle a spring que usa spring context annotation. -->
+        <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+        
+        <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        	<property name="persistenceUnitName" value="punit" />
+        	<property name="dataSource" ref="dataSource" />
+        	<property name="jpaVendorAdapter">
+        		<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+        			<!-- la siguiente property sirve para mostrar el sql que se esta ejecutando. -->
+        			<property name="showSql" value="true" />
+        		</bean>
+        	</property>
+        	<!-- aca se setean las propiedades especificas de hibernate. -->
+        	<property name="jpaPropertyMap">
+        		<map>
+        			<!-- dialect, is what type or what vendor of data base that we are going to use. -->
+        			<entry key="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect" />
+        			<!-- the value of the following key could be "create", "create-drop", "update", "validate" or "none".
+        			create: will create the data base is we haven't set it, los demas buscarlos en el video.
+        			create-drop: no elimina el schema, sino que lo que hace es borrar las tablas del schema
+        			a las que tenemos objetos mapeados.  -->
+        			<entry key="hibernate.hbm2ddl.auto" value="create-drop" />
+        			<entry key="hibernate.format_sql" value="true" />
+        		</map>
+        	</property>
+        </bean>
+        
+        
+        <!-- a continuacion agregamos el transactional manager. -->
+        <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        	<property name="entityManagerFactory" ref="entityManagerFactory" />
+        </bean>
+        
+        <tx:annotation-driven transaction-manager="transactionManager" />
+        
+        <!-- a continuacion agregamos el datasource. -->
+        <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        	<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        	<property name="url" value="jdbc:mysql://localhost:3306/training?autoReconnect=true" />
+        	<property name="username" value="root" />
+        	<property name="password" value="root" />
+        </bean>
+        
+        
+</beans>        

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-3.2.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<context:component-scan base-package="com.demo.controller" />
+	
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix">
+			<value>/WEB-INF/pages/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+
+	<!-- Internal Path Method Name Resolver. -->
+	<!-- In spring MVC, the ControllerClassNameHandlerMapping uses conventions 
+		to map request URLs to controllers, conventions of the configuration. It 
+		takes the class name, removes the controller suffix if it exists and returns 
+		the remaining text, lower case and with a leading forward slash. Por lo tanto, 
+		lo que va a hacer la siguiente linea, es buscar los controladores, en este 
+		caso UserController, le va a sacar la palabra Controller, de manera que va 
+		a quedar User, lo va a pasar a minusculas y le va a agregar una barra adelante 
+		de forma tal que va a quedar asi: /xmlview -->
+	<bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping"/>
+	
+	<bean class="com.demo.controller.XmlViewController" />
+	
+	<!-- XmlViewResolver is used to resolve "view name" based on view beans in the XML file.
+	By default, XmlViewResolver will loads the view beans form /WEB-INF/views.xml, however, this
+	location can be overridden through the "location" property. -->
+	<bean class="org.springframework.web.servlet.view.XmlViewResolver">
+		<property name="location">
+			<value>/WEB-INF/application-views-xml.xml</value>
+		</property>
+	</bean>
+
+</beans>
